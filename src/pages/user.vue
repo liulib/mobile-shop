@@ -5,13 +5,18 @@
     <!-- 主体内容 -->
     <div class="container">
       <!-- 用户信息 -->
-      <div class="user-info">
+      <div class="user-info" v-if="!userInfo">
         <img
           class="user-poster"
           src="http://img4.imgtn.bdimg.com/it/u=198369807,133263955&fm=27&gp=0.jpg"
           alt="用户信息"
         />
-        <p>注册/登录</p>
+        <p @click="$router.push({ name: 'Login' })">注册/登录</p>
+      </div>
+      <div class="user-info" v-else>
+        <img class="avatar" :src="userInfo.avatar" />
+        <p class="use-name">欢迎您：{{userInfo.userName}}</p>
+        <p @click="logout">退出登录</p>
       </div>
       <!-- 订单管理 -->
       <div class="order-info">
@@ -58,17 +63,60 @@
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
 
+import { mapMutations } from 'vuex'
+
 export default {
   components: {
     Tabbar,
     Topbar
   },
+  inject: ['reload'],
   data() {
-    return {}
+    return {
+      userInfo: null
+    }
   },
   computed: {},
   watch: {},
-  methods: {}
+  methods: {
+    // 获取用户信息
+    async _getUserInfo() {
+      try {
+        const res = await this.$api.users.getUserInfo()
+        if (res.code === 200) {
+          this.userInfo = res.userInfo
+        } else {
+          console.log(res.msg)
+        }
+      } catch (error) {
+        this.$toast(error.data.msg)
+      }
+    },
+    // 退出登录
+    logout() {
+      this.$dialog
+        .confirm({
+          title: '提示',
+          message: '您确定退出账号吗？',
+          confirmButtonText: '确定',
+          confirmButtonColor: '#b532e9'
+        })
+        .then(() => {
+          // 删除token信息，并跳转到登录页面
+          this.DEL_USER_TOKEN()
+          this.$toast('已退出登录')
+          this.$router.push('login')
+        })
+        .catch(() => {
+          // on cancel
+        })
+    },
+    ...mapMutations(['DEL_USER_TOKEN'])
+  },
+  created() {
+    this._getUserInfo()
+  },
+  mounted() {}
 }
 </script>
 <style lang='less' scoped>

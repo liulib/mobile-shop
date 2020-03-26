@@ -4,6 +4,7 @@ import Index from '../pages/index.vue'
 import Category from '../pages/category.vue'
 import Cart from '../pages/cart.vue'
 import User from '../pages/user.vue'
+import Login from '../pages/login.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/user',
     name: 'User',
     component: User
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 

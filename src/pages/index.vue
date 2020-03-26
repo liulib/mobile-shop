@@ -56,6 +56,7 @@
 
 <script>
 import Tabbar from '../components/Tabbar.vue'
+
 export default {
   components: {
     'l-tabbar': Tabbar
@@ -63,6 +64,7 @@ export default {
   data() {
     return {
       value: '',
+      homeData: {},
       swipe_images: [
         'http://images.baixingliangfan.cn/advertesPicture/20180407/20180407175040_1780.jpg',
         'http://images.baixingliangfan.cn/advertesPicture/20180407/20180407175111_9509.jpg',
@@ -100,7 +102,17 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    async _getHome() {
+      const res = await this.$api.goods.getHomeData()
+      if (res.code === 200) {
+        this.homeData = res.result
+        // this.loadingStatus = false
+      }
+    },
     onSearch: () => console.log('hhhhhhh')
+  },
+  created() {
+    this._getHome()
   }
 }
 </script>

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
+import api from './api/index' // 导入api接口
 
 import {
   Col,
@@ -28,7 +30,11 @@ import {
   CheckboxGroup,
   Icon,
   Cell,
-  CellGroup
+  CellGroup,
+  Toast,
+  Form,
+  Field,
+  Dialog
 } from 'vant'
 
 Vue.use(Col)
@@ -57,10 +63,17 @@ Vue.use(Col)
   .use(Icon)
   .use(Cell)
   .use(CellGroup)
+  .use(Toast)
+  .use(Form)
+  .use(Field)
+  .use(Dialog)
 
 Vue.config.productionTip = false
+// 将api挂载到vue的原型上
+Vue.prototype.$api = api
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
