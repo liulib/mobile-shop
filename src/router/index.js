@@ -5,6 +5,7 @@ import Category from '../pages/category.vue'
 import Cart from '../pages/cart.vue'
 import User from '../pages/user.vue'
 import Login from '../pages/login.vue'
+import goodsDetail from '../pages/goodsDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/goodsDetail',
+    name: 'GoodsDetail',
+    component: goodsDetail,
+    props: route => ({ goodsId: route.query.goodsId })
   }
 ]
 

@@ -1,9 +1,11 @@
 <template>
   <div>
-    <!-- 顶部导航 -->
-    <Topbar></Topbar>
     <!-- 主体内容 -->
     <div class="container">
+      <!-- 顶部导航 -->
+      <Topbar>
+        <span slot="title">购物车</span>
+      </Topbar>
       <!-- 商品列表 -->
       <van-checkbox-group v-model="result">
         <van-checkbox name="a">

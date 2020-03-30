@@ -34,7 +34,10 @@ import {
   Toast,
   Form,
   Field,
-  Dialog
+  Dialog,
+  GoodsAction,
+  GoodsActionIcon,
+  GoodsActionButton
 } from 'vant'
 
 Vue.use(Col)
@@ -67,6 +70,9 @@ Vue.use(Col)
   .use(Form)
   .use(Field)
   .use(Dialog)
+  .use(GoodsAction)
+  .use(GoodsActionButton)
+  .use(GoodsActionIcon)
 
 Vue.config.productionTip = false
 // 将api挂载到vue的原型上

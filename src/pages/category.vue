@@ -1,9 +1,11 @@
 <template>
   <div>
-    <!-- 顶部导航 -->
-    <Topbar></Topbar>
     <!-- 主体内容 -->
     <div class="container">
+      <!-- 顶部导航 -->
+      <Topbar>
+        <span slot="title">商品分类</span>
+      </Topbar>
       <van-row>
         <!-- 侧边导航 -->
         <van-col span="6">

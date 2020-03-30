@@ -33,6 +33,10 @@ const users = {
   // 获取用户信息  GET
   getUserInfo() {
     return axios.get(`${base.shop}/user/userInfo`)
+  },
+  // 获取用户订单数量信息  GET
+  getUserOrderNum() {
+    return axios.get(`${base.shop}/user/orderNum`)
   }
 }
 

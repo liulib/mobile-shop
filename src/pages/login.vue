@@ -242,6 +242,12 @@ export default {
     top: 10px;
     left: 10px;
   }
+  .login {
+    img {
+      width: 100px;
+      height: 35px;
+    }
+  }
 }
 .login,
 .register {
@@ -260,5 +266,6 @@ export default {
   text-align: right;
   color: #1989fa;
   margin: 0 16px 16px 0;
+  font-size: 13px;
 }
 </style>

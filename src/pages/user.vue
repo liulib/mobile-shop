@@ -1,9 +1,11 @@
 <template>
   <div>
-    <!-- 顶部导航 -->
-    <Topbar></Topbar>
     <!-- 主体内容 -->
     <div class="container">
+      <!-- 顶部导航 -->
+      <Topbar>
+        <span slot="title">个人中心</span>
+      </Topbar>
       <!-- 用户信息 -->
       <div class="user-info" v-if="!userInfo">
         <img
@@ -21,26 +23,35 @@
       <!-- 订单管理 -->
       <div class="order-info">
         <van-row>
-          <van-col span="8">订单管理</van-col>
+          <van-col span="8">
+            <span>订单管理</span>
+          </van-col>
           <van-col span="12"></van-col>
-          <van-col span="4">></van-col>
+          <van-col span="4">
+            <van-icon class="icon" name="arrow" />
+          </van-col>
         </van-row>
         <hr />
         <van-row>
           <van-col span="5">
-            <van-icon name="pending-payment" />待付款
+            <van-icon name="pending-payment" size="20.8" :badge="orderNum[0]||''" />
+            <p>待付款</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="tosend" />待发货
+            <van-icon name="tosend" size="20.8" :badge="orderNum[1]||''" />
+            <p>待发货</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="logistics" />待收货
+            <van-icon name="logistics" size="20.8" :badge="orderNum[2]||''" />
+            <p>待收货</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="completed" />已完成
+            <van-icon name="completed" size="20.8" :badge="orderNum[3]||''" />
+            <p>已完成</p>
           </van-col>
           <van-col span="4">
-            <van-icon name="like-o" />评价
+            <van-icon name="like-o" size="20.8" :badge="orderNum[4]||''" />
+            <p>评价</p>
           </van-col>
         </van-row>
       </div>
@@ -73,7 +84,8 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      userInfo: null
+      userInfo: null,
+      orderNum: []
     }
   },
   computed: {},
@@ -86,7 +98,19 @@ export default {
         if (res.code === 200) {
           this.userInfo = res.userInfo
         } else {
+          this.$toast(res.msg)
           console.log(res.msg)
+        }
+      } catch (error) {
+        this.$toast(error.data.msg)
+      }
+    },
+    // 获取用户订单数量信息
+    async _getUserOrderNum() {
+      try {
+        const res = await this.$api.users.getUserOrderNum()
+        if (res.code === 200) {
+          this.orderNum = res.orderNum
         }
       } catch (error) {
         this.$toast(error.data.msg)
@@ -115,6 +139,7 @@ export default {
   },
   created() {
     this._getUserInfo()
+    this._getUserOrderNum()
   },
   mounted() {}
 }
@@ -127,7 +152,7 @@ export default {
   width: 100%;
   background-color: #1989fa;
   text-align: center;
-  padding: 10% 0 20% 0;
+  padding: 10% 0 19% 0;
   img {
     width: 54.6px;
     height: 54.6px;
@@ -143,7 +168,6 @@ export default {
 .order-info {
   width: 90%;
   margin: 0 auto;
-  border: 1px solid #000;
   border-radius: 10px;
   text-align: center;
   box-shadow: 3px 4px 20px rgba(25, 137, 250, 0.3);
@@ -156,13 +180,20 @@ export default {
   .van-row:nth-child(1) {
     font-weight: bold;
   }
+  .van-row:nth-child(2) {
+    color: #eee;
+  }
   .van-row:nth-child(3) {
     font-size: 12px;
-  }
-  .van-icon {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 24px;
+    padding-top: 5px;
+    p {
+      margin: 5px 0 0 0;
+    }
+    // .van-icon {
+    //   display: block;
+    //   margin-bottom: 4px;
+    //   font-size: 24px;
+    // }
   }
 }
 </style>
