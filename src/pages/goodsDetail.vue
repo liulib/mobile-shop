@@ -55,7 +55,7 @@
       <van-goods-action>
         <van-goods-action-icon icon="wap-home-o" to="/" text="首页" />
         <van-goods-action-icon icon="cart-o" to="/cart" text="购物车" />
-        <van-goods-action-button type="warning" text="加入购物车" />
+        <van-goods-action-button type="warning" text="加入购物车" @click="_addToCart" />
         <van-goods-action-button type="danger" text="立即购买" />
       </van-goods-action>
     </div>
@@ -64,6 +64,8 @@
 
 <script>
 import Topbar from '../components/Topbar.vue'
+import store from '../store'
+
 export default {
   props: ['goodsId'],
   components: { Topbar },
@@ -72,7 +74,8 @@ export default {
       current: 0,
       active: 0,
       goodsInfo: {},
-      commentList: [] // 没有接口 暂时先不写了
+      commentList: [], // 没有接口 暂时先不写了
+      userToken: ''
     }
   },
   computed: {},
@@ -87,8 +90,23 @@ export default {
           console.log(this.goodsInfo.detail)
         }
       } catch (error) {
-        error.code === 404 && this.$toast(error.message)
+        this.$toast(error.message)
         console.log(error)
+      }
+    },
+    // 添加到购物车
+    async _addToCart() {
+      if (this.userToken) {
+        try {
+          const res = await this.$api.users.addToCart(this.goodsId)
+          this.$toast(res.msg)
+        } catch (error) {
+          this.$toast(error.message)
+          console.log(error)
+        }
+      } else {
+        this.$toast('请先登录')
+        this.$router.push('login')
       }
     },
     // 自定义指示器
@@ -98,6 +116,7 @@ export default {
   },
   created() {
     this._getGoodsDetail()
+    this.userToken = store.getters.userToken
   }
 }
 </script>

@@ -37,7 +37,12 @@ import {
   Dialog,
   GoodsAction,
   GoodsActionIcon,
-  GoodsActionButton
+  GoodsActionButton,
+  List,
+  Stepper,
+  Loading,
+  AddressList,
+  AddressEdit
 } from 'vant'
 
 Vue.use(Col)
@@ -73,6 +78,11 @@ Vue.use(Col)
   .use(GoodsAction)
   .use(GoodsActionButton)
   .use(GoodsActionIcon)
+  .use(List)
+  .use(Stepper)
+  .use(Loading)
+  .use(AddressList)
+  .use(AddressEdit)
 
 Vue.config.productionTip = false
 // 将api挂载到vue的原型上

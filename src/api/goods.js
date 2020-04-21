@@ -15,8 +15,10 @@ const goods = {
     return axios.get(`${base.shop}/goods/goodsDetails`, { params: { goodsId } })
   },
   // 分类商品列表 GET
-  getGoodsList(categoryId) {
-    return axios.get(`${base.shop}/goods/goodsList`, { params: { categoryId } })
+  getGoodsList(categorySubId) {
+    return axios.get(`${base.shop}/goods/goodsList`, {
+      params: { categorySubId }
+    })
   }
 }
 

@@ -3,21 +3,21 @@
  * 请求拦截、响应拦截、错误统一处理
  */
 import axios from 'axios'
-import router from '../router'
+// import router from '../router'
 import store from '../store'
 
 /**
  * 跳转登录页
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
-const toLogin = () => {
-  router.replace({
-    path: '/login',
-    query: {
-      redirect: router.currentRoute.fullPath
-    }
-  })
-}
+// const toLogin = () => {
+//   router.replace({
+//     path: '/login',
+//     query: {
+//       redirect: router.currentRoute.fullPath
+//     }
+//   })
+// }
 
 /**
  * 请求失败后的错误统一处理
@@ -28,15 +28,17 @@ const errorHandle = (status, other) => {
   switch (status) {
     // 401: 未登录状态，跳转登录页
     case 401:
-      toLogin()
+      localStorage.removeItem('userToken')
+      store.commit('DEL_USER_TOKEN', null)
+      // toLogin()
       break
     // 403 token过期
     // 清除token并跳转登录页
     case 403:
-      localStorage.removeItem('token')
-      // store.commit('loginSuccess', null)
+      localStorage.removeItem('userToken')
+      store.commit('DEL_USER_TOKEN', null)
       setTimeout(() => {
-        toLogin()
+        // toLogin()
       }, 1000)
       break
     // 404请求不存在

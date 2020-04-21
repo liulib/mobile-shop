@@ -22,12 +22,16 @@
           </van-swipe-item>
         </van-swipe>
       </div>
-      <!-- 分类 -->
+      <!-- 商品分类 -->
       <div class="category">
         <van-grid :border="false" :column-num="5">
-          <van-grid-item v-for="(cat, index) in homeData.category" :key="index">
-            <img :src="cat.image" />
-            <p>{{cat.mallCategoryName}}</p>
+          <van-grid-item
+            v-for="(item, index) in homeData.category"
+            :key="index"
+            @click="goCategory(item.mallCategoryId)"
+          >
+            <img :src="item.image" />
+            <p>{{item.mallCategoryName}}</p>
           </van-grid-item>
         </van-grid>
       </div>
@@ -49,7 +53,7 @@
               </p>
               <div class="check">
                 <div class="addCart">
-                  <van-icon name="cart-o" />
+                  <van-icon name="cart-o" @click.stop="_addToCart(item.goodsId)" />
                 </div>
                 <div class="seeMore" @click.stop="goGoodsDetail(item.goodsId)">
                   <span>查看详情</span>
@@ -125,6 +129,8 @@
 
 <script>
 import Tabbar from '../components/Tabbar.vue'
+import { mapMutations } from 'vuex'
+import store from '../store'
 
 export default {
   components: {
@@ -134,7 +140,8 @@ export default {
     return {
       value: '',
       homeData: {},
-      isShowSearch: false
+      isShowSearch: false,
+      userToken: ''
     }
   },
   computed: {},
@@ -146,17 +153,37 @@ export default {
         const res = await this.$api.goods.getHomeData()
         if (res.code === 200) {
           this.homeData = res.result
-          // console.log(this.homeData.advertesPicture.PICTURE_ADDRESS)
-          // this.loadingStatus = false
+          // 将大分类信息存入vuex
+          this.SET_CATEGORY_INFO(JSON.stringify(this.homeData.category))
         }
       } catch (error) {
         this.$toast(error.data.msg)
       }
+    }, // 添加到购物车
+    async _addToCart(goodsId) {
+      if (this.userToken) {
+        try {
+          const res = await this.$api.users.addToCart(goodsId)
+          this.$toast(res.msg)
+        } catch (error) {
+          this.$toast(error.message)
+          console.log(error)
+        }
+      } else {
+        this.$toast('请先登录')
+        this.$router.push('login')
+      }
     },
     // 跳转到商品详情页
     goGoodsDetail(goodsId) {
-      console.log(goodsId)
       this.$router.push({ name: 'GoodsDetail', query: { goodsId: goodsId } })
+    },
+    // 跳转到分类页
+    goCategory(mallCategoryId) {
+      this.$router.push({
+        name: 'Category',
+        query: { mallCategoryId }
+      })
     },
     // 显示搜索结果页面
     showSearch() {
@@ -165,26 +192,18 @@ export default {
     onSearch: () => console.log('hhhhhhh'),
     onCancel() {
       this.isShowSearch = false
-    }
+    },
+    ...mapMutations({
+      SET_CATEGORY_INFO: 'SET_CATEGORY_INFO'
+    })
   },
   created() {
     this._getHome()
+    this.userToken = store.getters.userToken
   }
 }
 </script>
 <style lang='less' scoped>
-.clear-fix:before,
-.clear-fix:after {
-  content: '';
-  display: table;
-}
-.clear-fix:after {
-  clear: both;
-}
-.clear-fix {
-  *zoom: 1;
-}
-
 .container {
   background-color: #eeeeee;
   .navbar {
@@ -194,11 +213,11 @@ export default {
   }
 }
 .content {
-  position: fixed;
-  top: 44px;
-  right: 0;
-  left: 0;
-  bottom: 50px;
+  &:after {
+    content: '';
+    display: block;
+    height: 50px;
+  }
   .swipe {
     .van-swipe-item {
       color: #fff;
