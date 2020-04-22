@@ -32,7 +32,7 @@
       <span>数量：{{goodsInfo.amount}}</span>
       <span>
         收藏：
-        <van-icon name="like-o" />
+        <van-icon :name="collectionFlag?'like':'like-o'" @click="_collectionHandle" />
       </span>
     </div>
     <!-- 商品详情和评论 -->
@@ -75,19 +75,19 @@ export default {
       active: 0,
       goodsInfo: {},
       commentList: [], // 没有接口 暂时先不写了
-      userToken: ''
+      userToken: '',
+      collectionFlag: false
     }
   },
   computed: {},
   watch: {},
   methods: {
-    //   获取商品信息
+    // 获取商品信息
     async _getGoodsDetail() {
       try {
         const res = await this.$api.goods.getGoodsDetail(this.goodsId)
         if (res.code === 200) {
           this.goodsInfo = res.result
-          console.log(this.goodsInfo.detail)
         }
       } catch (error) {
         this.$toast(error.message)
@@ -109,6 +109,32 @@ export default {
         this.$router.push('login')
       }
     },
+    // 查询是否收藏
+    async _queryCollection() {
+      try {
+        const res = await this.$api.users.queryCollection(this.goodsId)
+        if (res.code === 200) {
+          this.collectionFlag = res.status
+        }
+      } catch (error) {
+        this.$toast(error.msg)
+      }
+    },
+    // 商品收藏、取消
+    async _collectionHandle() {
+      try {
+        const res = await this.$api.users.collectionHandle(
+          this.goodsId,
+          Number(!this.collectionFlag)
+        )
+        if (res.code === 200) {
+          this.$toast(res.msg)
+          this.collectionFlag = !this.collectionFlag
+        }
+      } catch (error) {
+        this.$toast(error.msg)
+      }
+    },
     // 自定义指示器
     onChange(index) {
       this.current = index
@@ -116,6 +142,7 @@ export default {
   },
   created() {
     this._getGoodsDetail()
+    this._queryCollection()
     this.userToken = store.getters.userToken
   }
 }

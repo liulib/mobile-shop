@@ -73,6 +73,25 @@ const users = {
   // 提交订单
   submitOrder(orderInfo) {
     return axios.post(`${base.shop}/u-action/submitOrder`, { orderInfo })
+  },
+  // 获取订单列表
+  getOrdersList(categorySubId) {
+    return axios.get(`${base.shop}/user/orderList`)
+  },
+  // 获取用户收藏列表
+  getCollectionList() {
+    return axios.get(`${base.shop}/user/collectionList`)
+  },
+  // 商品收藏、取消
+  collectionHandle(goodsId, collectionFlag) {
+    return axios.post(`${base.shop}/u-action/collection`, {
+      goodsId,
+      collectionFlag
+    })
+  },
+  // 查询是否收藏
+  queryCollection(goodsId) {
+    return axios.post(`${base.shop}/user/queryCollection`, { goodsId })
   }
 }
 

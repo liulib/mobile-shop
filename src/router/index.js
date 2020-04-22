@@ -9,6 +9,9 @@ import goodsDetail from '../pages/goodsDetail.vue'
 import confirmOrder from '../pages/confirmOrder.vue'
 import AddressManage from '../pages/addressManage.vue'
 import AddressEdit from '../pages/addressEdit.vue'
+import OrderManage from '../pages/orderManage.vue'
+import Collection from '../pages/collection.vue'
+import BrowseHistory from '../pages/browseHistory.vue'
 
 Vue.use(VueRouter)
 
@@ -58,6 +61,21 @@ const routes = [
     path: '/addressEdit',
     name: 'AddressEdit',
     component: AddressEdit
+  },
+  {
+    path: '/orderManage',
+    name: 'OrderManage',
+    component: OrderManage
+  },
+  {
+    path: '/collection',
+    name: 'Collection',
+    component: Collection
+  },
+  {
+    path: '/browseHistory',
+    name: 'BrowseHistory',
+    component: BrowseHistory
   }
 ]
 

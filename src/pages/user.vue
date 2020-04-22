@@ -22,7 +22,7 @@
       </div>
       <!-- 订单管理 -->
       <div class="order-info">
-        <van-row>
+        <van-row @click="goOrderManage('0')">
           <van-col span="8">
             <span>订单管理</span>
           </van-col>
@@ -34,23 +34,48 @@
         <hr />
         <van-row>
           <van-col span="5">
-            <van-icon name="pending-payment" size="20.8" :badge="orderNum[0]||''" />
+            <van-icon
+              name="pending-payment"
+              size="20.8"
+              :badge="orderNum[0]||''"
+              @click="goOrderManage('1')"
+            />
             <p>待付款</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="tosend" size="20.8" :badge="orderNum[1]||''" />
+            <van-icon
+              name="tosend"
+              size="20.8"
+              :badge="orderNum[1]||''"
+              @click="goOrderManage('2')"
+            />
             <p>待发货</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="logistics" size="20.8" :badge="orderNum[2]||''" />
+            <van-icon
+              name="logistics"
+              size="20.8"
+              :badge="orderNum[2]||''"
+              @click="goOrderManage('3')"
+            />
             <p>待收货</p>
           </van-col>
           <van-col span="5">
-            <van-icon name="completed" size="20.8" :badge="orderNum[3]||''" />
+            <van-icon
+              name="completed"
+              size="20.8"
+              :badge="orderNum[3]||''"
+              @click="goOrderManage('4')"
+            />
             <p>已完成</p>
           </van-col>
           <van-col span="4">
-            <van-icon name="like-o" size="20.8" :badge="orderNum[4]||''" />
+            <van-icon
+              name="like-o"
+              size="20.8"
+              :badge="orderNum[4]||''"
+              @click="goOrderManage('5')"
+            />
             <p>评价</p>
           </van-col>
         </van-row>
@@ -58,9 +83,9 @@
       <!-- 其他操作 -->
       <div class="other-entry">
         <van-cell-group>
-          <van-cell title="收藏商品" icon="star-o" is-link />
-          <van-cell title="地址管理" icon="location-o" is-link />
-          <van-cell title="最近浏览" icon="browsing-history-o" is-link />
+          <van-cell title="收藏商品" icon="star-o" is-link to="Collection" />
+          <van-cell title="地址管理" icon="location-o" is-link to="AddressManage" />
+          <van-cell title="最近浏览" icon="browsing-history-o" is-link to="BrowseHistory" />
         </van-cell-group>
       </div>
     </div>
@@ -134,6 +159,9 @@ export default {
         .catch(() => {
           // on cancel
         })
+    }, // 去订单管理界面
+    goOrderManage(status) {
+      this.$router.push({ name: 'OrderManage', query: { status } })
     },
     ...mapMutations(['DEL_USER_TOKEN'])
   },
