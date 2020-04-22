@@ -6,7 +6,6 @@
         v-model="value"
         placeholder="请输入搜索关键词"
         label="地址"
-        @search="onSearch"
         @cancel="onCancel"
         @focus="showSearch"
         :show-action="isShowSearch"
@@ -115,11 +114,27 @@
       </div>
     </div>
 
-    <!-- 搜索结果 -->
+    <!-- 搜索历史 -->
     <div class="searchResult" v-if="isShowSearch">
-      <div class="searchWarp">
-        <span>搜索历史</span>
-        <van-icon name="delete" />
+      <div class="searchWarp" v-if="!searchResultList.length">
+        <div class="searchTitle">
+          <span>搜索历史</span>
+          <van-icon name="delete" @click.stop="delSearchHistory" />
+        </div>
+        <div class="historyList">
+          <span v-for="(item,index) in searchHistory" :key="index">{{item}}</span>
+        </div>
+      </div>
+      <!-- 搜索结果 -->
+      <div class="searchList" v-else>
+        <van-card
+          v-for="(item,index) in searchResultList"
+          :key="index"
+          :price="item.present_price"
+          :title="item.name"
+          :thumb="item.image_path"
+          @click.stop="goGoodsDetail(item.id)"
+        ></van-card>
       </div>
     </div>
     <!-- Tabbar -->
@@ -141,11 +156,17 @@ export default {
       value: '',
       homeData: {},
       isShowSearch: false,
-      userToken: ''
+      userToken: '',
+      searchResultList: [],
+      searchHistory: []
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    value: function(newvalue) {
+      this._getSearchResult(newvalue)
+    }
+  },
   methods: {
     // 获取首页数据
     async _getHome() {
@@ -159,7 +180,8 @@ export default {
       } catch (error) {
         this.$toast(error.data.msg)
       }
-    }, // 添加到购物车
+    },
+    // 添加到购物车
     async _addToCart(goodsId) {
       if (this.userToken) {
         try {
@@ -189,17 +211,50 @@ export default {
     showSearch() {
       this.isShowSearch = true
     },
-    onSearch: () => console.log('hhhhhhh'),
+    // 取消显示搜索结果页面
     onCancel() {
       this.isShowSearch = false
     },
+    // 获取搜索结果
+    async _getSearchResult(value) {
+      try {
+        const res = await this.$api.operations.search(value)
+        console.log(this.searchHistory)
+        if (res.code === 200) {
+          this.searchResultList = res.result.goodsList
+          // 添加到搜索历史中
+          if (
+            !this.searchHistory.some(item => {
+              if (item === value) {
+                return true
+              }
+            })
+          ) {
+            setTimeout(() => {
+              this.SET_SEARCH_HISTORY(this.searchHistory.concat([value]))
+            }, 500)
+          }
+        }
+        this.searchHistory = store.getters.searchHistory
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 删除搜索历史
+    delSearchHistory() {
+      this.DEL_SEARCH_HISTORY()
+      this.searchHistory = store.getters.searchHistory
+    },
     ...mapMutations({
-      SET_CATEGORY_INFO: 'SET_CATEGORY_INFO'
+      SET_CATEGORY_INFO: 'SET_CATEGORY_INFO',
+      SET_SEARCH_HISTORY: 'SET_SEARCH_HISTORY',
+      DEL_SEARCH_HISTORY: 'DEL_SEARCH_HISTORY'
     })
   },
   created() {
     this._getHome()
     this.userToken = store.getters.userToken
+    this.searchHistory = store.getters.searchHistory
   }
 }
 </script>
@@ -331,9 +386,21 @@ export default {
   z-index: 200;
   background-color: #fff;
   .searchWarp {
-    display: flex;
-    justify-content: space-between;
     padding: 10px;
+    font-size: 14px;
+    .searchTitle {
+      display: flex;
+      justify-content: space-between;
+    }
+    .historyList {
+      padding: 14px 5px 0 5px;
+      span {
+        padding: 5px;
+        margin: 5px;
+        background-color: #eee;
+        border-radius: 10px;
+      }
+    }
   }
 }
 </style>

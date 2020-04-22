@@ -32,6 +32,16 @@ const mutations = {
   [types.SET_BROWSE_HISTORY](state, payload) {
     state.browseHistory = payload
     localStorage.setItem('browseHistory', JSON.stringify(payload))
+  },
+  // 设置searchHistory
+  [types.SET_SEARCH_HISTORY](state, payload) {
+    state.searchHistory = payload
+    localStorage.setItem('searchHistory', JSON.stringify(payload))
+  },
+  // 清除searchHistory
+  [types.DEL_SEARCH_HISTORY](state) {
+    localStorage.searchHistory = []
+    state.searchHistory = []
   }
 }
 

@@ -8,6 +8,8 @@ const confirmOrderInfo = state => state.confirmOrderInfo
 const addressInfo = state => state.addressInfo
 // 浏览历史
 const browseHistory = state => state.browseHistory
+// 搜索历史
+const searchHistory = state => state.searchHistory
 
 export default {
   // 用户 token
@@ -19,5 +21,7 @@ export default {
   // 地址信息
   addressInfo,
   // 浏览历史
-  browseHistory
+  browseHistory,
+  // 搜索历史
+  searchHistory
 }
