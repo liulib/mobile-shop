@@ -27,6 +27,11 @@ const mutations = {
   // 清除addressInfo
   [types.DEL_ADDRESS_INFO](state) {
     state.addressInfo = {}
+  },
+  // 设置browseHistory
+  [types.SET_BROWSE_HISTORY](state, payload) {
+    state.browseHistory = payload
+    localStorage.setItem('browseHistory', JSON.stringify(payload))
   }
 }
 

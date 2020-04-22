@@ -1,7 +1,7 @@
 // import * as types from './mutations-type'
 // // 设置用户 token
-// const setUserToken = ({ commit }, userToken) => {
-//   commit(types.USER_TOKEN, tokenCache.setCache(userToken))
+// const setBrowseHistory = ({ commit }, browseHistory) => {
+//   commit(types.browseHistory, tokenCache.setCache(browseHistory))
 // }
 // // 删除用户 token
 // const deleteUserToken = ({ commit }) => {

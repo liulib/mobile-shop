@@ -35,7 +35,6 @@ export default {
     async _getCollectionList() {
       try {
         const res = await this.$api.users.getCollectionList()
-        console.log(res)
         if (res.code === 200) {
           this.collectionList = res.collectionList
         }

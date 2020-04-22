@@ -127,7 +127,6 @@ export default {
     // 转到结算界面
     goConfirmOrder() {
       const goods = this.getCheckGood()
-      console.log(goods.length)
       if (goods.length !== 0) {
         this.SET_CONFIRM_ORDER_INFO(goods)
         this.$router.push('ConfirmOrder')

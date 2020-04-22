@@ -65,6 +65,7 @@
 <script>
 import Topbar from '../components/Topbar.vue'
 import store from '../store'
+import { mapMutations } from 'vuex'
 
 export default {
   props: ['goodsId'],
@@ -76,7 +77,9 @@ export default {
       goodsInfo: {},
       commentList: [], // 没有接口 暂时先不写了
       userToken: '',
-      collectionFlag: false
+      collectionFlag: false,
+      browseHistory: [],
+      browseFlag: false
     }
   },
   computed: {},
@@ -88,6 +91,20 @@ export default {
         const res = await this.$api.goods.getGoodsDetail(this.goodsId)
         if (res.code === 200) {
           this.goodsInfo = res.result
+          // 添加到浏览历史中
+          if (
+            !this.browseHistory.some(item => {
+              if (item.id === this.goodsId) {
+                return true
+              }
+            })
+          ) {
+            setTimeout(() => {
+              this.SET_BROWSE_HISTORY(
+                this.browseHistory.concat([this.goodsInfo])
+              )
+            }, 500)
+          }
         }
       } catch (error) {
         this.$toast(error.message)
@@ -111,13 +128,15 @@ export default {
     },
     // 查询是否收藏
     async _queryCollection() {
-      try {
-        const res = await this.$api.users.queryCollection(this.goodsId)
-        if (res.code === 200) {
-          this.collectionFlag = res.status
+      if (this.userToken) {
+        try {
+          const res = await this.$api.users.queryCollection(this.goodsId)
+          if (res.code === 200) {
+            this.collectionFlag = res.status
+          }
+        } catch (error) {
+          this.$toast(error.msg)
         }
-      } catch (error) {
-        this.$toast(error.msg)
       }
     },
     // 商品收藏、取消
@@ -138,12 +157,16 @@ export default {
     // 自定义指示器
     onChange(index) {
       this.current = index
-    }
+    },
+    ...mapMutations({
+      SET_BROWSE_HISTORY: 'SET_BROWSE_HISTORY'
+    })
   },
   created() {
     this._getGoodsDetail()
     this._queryCollection()
     this.userToken = store.getters.userToken
+    this.browseHistory = store.getters.browseHistory
   }
 }
 </script>

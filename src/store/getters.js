@@ -6,6 +6,8 @@ const categoryInfo = state => state.categoryInfo
 const confirmOrderInfo = state => state.confirmOrderInfo
 // 地址信息
 const addressInfo = state => state.addressInfo
+// 浏览历史
+const browseHistory = state => state.browseHistory
 
 export default {
   // 用户 token
@@ -15,5 +17,7 @@ export default {
   // 支付订单信息
   confirmOrderInfo,
   // 地址信息
-  addressInfo
+  addressInfo,
+  // 浏览历史
+  browseHistory
 }
