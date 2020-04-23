@@ -146,6 +146,7 @@
 import Tabbar from '../components/Tabbar.vue'
 import { mapMutations } from 'vuex'
 import store from '../store'
+import { throttle } from '../utils/utils'
 
 export default {
   components: {
@@ -163,9 +164,11 @@ export default {
   },
   computed: {},
   watch: {
-    value: function(newvalue) {
-      this._getSearchResult(newvalue)
-    }
+    // value: function(newvalue) {
+    //   if (newvalue) {
+    //     throttle(this._getSearchResult(newvalue), 5000)
+    //   }
+    // }
   },
   methods: {
     // 获取首页数据
@@ -214,6 +217,11 @@ export default {
     // 取消显示搜索结果页面
     onCancel() {
       this.isShowSearch = false
+      setTimeout(() => {
+        this.value = ''
+        this.searchResultList = []
+        this.searchHistory = store.getters.searchHistory
+      }, 300)
     },
     // 获取搜索结果
     async _getSearchResult(value) {
@@ -253,8 +261,20 @@ export default {
   },
   created() {
     this._getHome()
+    this.unWatch = this.$watch(
+      'value',
+      throttle(() => {
+        if (this.value) {
+          this._getSearchResult(this.value)
+        }
+      }, 2000)
+    )
     this.userToken = store.getters.userToken
     this.searchHistory = store.getters.searchHistory
+  },
+  destroyed() {
+    // 注销 watch
+    this.unWatch()
   }
 }
 </script>
@@ -395,6 +415,7 @@ export default {
     .historyList {
       padding: 14px 5px 0 5px;
       span {
+        display: inline-block;
         padding: 5px;
         margin: 5px;
         background-color: #eee;

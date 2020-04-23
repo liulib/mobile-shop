@@ -40,7 +40,7 @@ const mutations = {
   },
   // 清除searchHistory
   [types.DEL_SEARCH_HISTORY](state) {
-    localStorage.searchHistory = []
+    localStorage.searchHistory = ''
     state.searchHistory = []
   }
 }
