@@ -5,26 +5,33 @@
       <span slot="title">我的收藏</span>
     </Topbar>
     <!-- 收藏商品列表 -->
-    <van-card
-      v-for="(item,index) in collectionList"
-      :key="index"
-      :price="item.present_price"
-      :title="item.goods_name"
-      :thumb="item.image_path"
-      @click.stop="goGoodsDetail(item.goodsId)"
-    >
-      <template #footer>
-        <van-button size="mini" @click.stop="_cancleCollection(item.goodsId,index)">取消</van-button>
-      </template>
-    </van-card>
+    <div class="collectionList">
+      <BScroll class="content-scroll">
+        <div class="wrapper-content">
+          <van-card
+            v-for="(item,index) in collectionList"
+            :key="index"
+            :price="item.present_price"
+            :title="item.goods_name"
+            :thumb="item.image_path"
+            @click.stop="goGoodsDetail(item.goodsId)"
+          >
+            <template #footer>
+              <van-button size="mini" @click.stop="_cancleCollection(item.goodsId,index)">取消</van-button>
+            </template>
+          </van-card>
+        </div>
+      </BScroll>
+    </div>
   </div>
 </template>
 
 <script>
 import Topbar from '../components/Topbar.vue'
+import BScroll from '../components/BetterScroll.vue'
 
 export default {
-  components: { Topbar },
+  components: { Topbar, BScroll },
   data() {
     return { collectionList: [] }
   },
@@ -66,4 +73,15 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.collectionList {
+  position: fixed;
+  top: 38px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .content-scroll {
+    height: 100%;
+    overflow: hidden;
+  }
+}
 </style>

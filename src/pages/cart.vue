@@ -19,32 +19,38 @@
           </section>
         </div>
         <!-- 有商品的购物车 -->
-        <div class="list-cart" v-if="!loadingStatus && shopCartList.length">
-          <!-- 统计信息、管理 -->
-          <div class="header">
-            <p>共{{shopCartList.length}}件商品</p>
-            <p @click="showManage">{{isShowManage?'完成':'管理'}}</p>
-          </div>
-          <!-- 商品列表 -->
-          <div class="shopList">
-            <ul>
-              <li v-for="(item, index) in shopCartList" :key="index">
-                <van-checkbox v-model="item.checked"></van-checkbox>
-                <div class="goodLeft">
-                  <img :src="item.image_path" alt />
+        <div class="shop-cart" v-if="!loadingStatus && shopCartList.length">
+          <BScroll class="content-scroll">
+            <div class="wrapper-content">
+              <div class="list-cart">
+                <!-- 统计信息、管理 -->
+                <div class="header">
+                  <p>共{{shopCartList.length}}件商品</p>
+                  <p @click="showManage">{{isShowManage?'完成':'管理'}}</p>
                 </div>
-                <div class="goodRight">
-                  <p>{{item.goods_name}}</p>
-                  <div class="wrapper">
-                    <p>￥{{item.present_price}}/件</p>
-                    <div class="stepper">
-                      <van-stepper v-model="item.buy_count" />
-                    </div>
-                  </div>
+                <!-- 商品列表 -->
+                <div class="shopList">
+                  <ul>
+                    <li v-for="(item, index) in shopCartList" :key="index">
+                      <van-checkbox v-model="item.checked"></van-checkbox>
+                      <div class="goodLeft">
+                        <img :src="item.image_path" alt />
+                      </div>
+                      <div class="goodRight">
+                        <p>{{item.goods_name}}</p>
+                        <div class="wrapper">
+                          <p>￥{{item.present_price}}/件</p>
+                          <div class="stepper">
+                            <van-stepper v-model="item.buy_count" />
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-              </li>
-            </ul>
-          </div>
+              </div>
+            </div>
+          </BScroll>
           <!-- 结算订单 -->
           <van-submit-bar
             v-if="!isShowManage"
@@ -71,6 +77,7 @@
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
 import Loading from '../components/Loading.vue'
+import BScroll from '../components/BetterScroll.vue'
 import store from '../store'
 import { mapMutations } from 'vuex'
 
@@ -78,7 +85,8 @@ export default {
   components: {
     Tabbar,
     Topbar,
-    Loading
+    Loading,
+    BScroll
   },
   data() {
     return {
@@ -191,6 +199,17 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.shop-cart {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 38px;
+  bottom: 90px;
+  .content-scroll {
+    height: 100%;
+    overflow: hidden;
+  }
+}
 .empty-cart {
   padding-top: 40px;
   .cart-warpper {
@@ -259,7 +278,6 @@ export default {
     }
   }
 }
-
 .van-submit-bar {
   bottom: 50px;
   .van-submit-bar__bar {

@@ -33,15 +33,20 @@
         <span>点击添加收货地址</span>
       </div>
     </div>
-    <div class="shopList">
-      <van-card
-        v-for="(item, index) in confirmOrders"
-        :key="index"
-        :num="item.buy_count"
-        :price="item.present_price"
-        :title="item.goods_name"
-        :thumb="item.image_path"
-      />
+    <!-- 商品列表 -->
+    <div class="shopList" v-if="confirmOrders.length">
+      <BScroll class="content-scroll">
+        <div class="wrapper-content">
+          <van-card
+            v-for="(item, index) in confirmOrders"
+            :key="index"
+            :num="item.buy_count"
+            :price="item.present_price"
+            :title="item.goods_name"
+            :thumb="item.image_path"
+          />
+        </div>
+      </BScroll>
     </div>
     <div class="confirm">
       <van-submit-bar :price="totalPrice" button-text="提交订单" @submit="submitOrder" />
@@ -51,11 +56,12 @@
 
 <script>
 import Topbar from '../components/Topbar.vue'
+import BScroll from '../components/BetterScroll.vue'
 import store from '../store'
 import { mapMutations } from 'vuex'
 
 export default {
-  components: { Topbar },
+  components: { Topbar, BScroll },
   data() {
     return { confirmOrders: [], addressList: [], defAddress: {} }
   },
@@ -145,6 +151,17 @@ export default {
         font-size: 14px;
       }
     }
+  }
+}
+.shopList {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 135px;
+  bottom: 50px;
+  .content-scroll {
+    height: 100%;
+    overflow: hidden;
   }
 }
 </style>

@@ -5,28 +5,35 @@
       <span slot="title">浏览历史</span>
     </Topbar>
     <!-- 浏览历史商品 -->
-    <van-card
-      v-for="(item,index) in browseHistoryList"
-      :key="index"
-      :price="item.present_price"
-      :title="item.name"
-      :thumb="item.image_path"
-      @click.stop="goGoodsDetail(item.goodsId)"
-    >
-      <template #footer>
-        <van-button size="mini" @click.stop="delBrowseHistory(index)">删除</van-button>
-      </template>
-    </van-card>
+    <div class="browseHistoryList">
+      <BScroll class="content-scroll">
+        <div class="wrapper-content">
+          <van-card
+            v-for="(item,index) in browseHistoryList"
+            :key="index"
+            :price="item.present_price"
+            :title="item.name"
+            :thumb="item.image_path"
+            @click.stop="goGoodsDetail(item.goodsId)"
+          >
+            <template #footer>
+              <van-button size="mini" @click.stop="delBrowseHistory(index)">删除</van-button>
+            </template>
+          </van-card>
+        </div>
+      </BScroll>
+    </div>
   </div>
 </template>
 
 <script>
 import Topbar from '../components/Topbar.vue'
+import BScroll from '../components/BetterScroll.vue'
 import store from '../store'
 import { mapMutations } from 'vuex'
 
 export default {
-  components: { Topbar },
+  components: { Topbar, BScroll },
   data() {
     return { browseHistoryList: [] }
   },
@@ -50,4 +57,15 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.browseHistoryList {
+  position: fixed;
+  top: 38px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .content-scroll {
+    height: 100%;
+    overflow: hidden;
+  }
+}
 </style>

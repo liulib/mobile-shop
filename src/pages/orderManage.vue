@@ -12,43 +12,49 @@
       <van-tab title="待收货"></van-tab>
       <van-tab title="已完成"></van-tab>
     </van-tabs>
+    <!-- 商品列表 -->
     <div class="ordersList" v-if="orderList.length">
-      <div class="orderInfo" v-for="(item,index) in currentOrderList" :key="index">
-        <div class="orderNum">
-          <p>
-            订单编号：
-            <span style="color:red">{{item.order_id}}</span>
-          </p>
+      <BScroll class="content-scroll">
+        <div class="wrapper-content">
+          <div class="orderInfo" v-for="(item,index) in currentOrderList" :key="index">
+            <div class="orderNum">
+              <p>
+                订单编号：
+                <span style="color:red">{{item.order_id}}</span>
+              </p>
+            </div>
+            <van-card
+              :num="item.buy_count"
+              :price="item.present_price"
+              :title="item.goods_name"
+              :thumb="item.image_path"
+              v-for="(item,index) in item.order_list"
+              :key="index"
+            />
+            <div class="orderDetail">
+              <p>共{{item.order_list.length}}件商品</p>
+              <p>
+                创建时间：
+                <span style="color:red">{{item.createAt}}</span>
+              </p>
+              <p>
+                收货地址：
+                <span>{{item.address}}</span>
+              </p>
+            </div>
+          </div>
         </div>
-        <van-card
-          :num="item.buy_count"
-          :price="item.present_price"
-          :title="item.goods_name"
-          :thumb="item.image_path"
-          v-for="(item,index) in item.order_list"
-          :key="index"
-        />
-        <div class="orderDetail">
-          <p>共{{item.order_list.length}}件商品</p>
-          <p>
-            创建时间：
-            <span style="color:red">{{item.createAt}}</span>
-          </p>
-          <p>
-            收货地址：
-            <span>{{item.address}}</span>
-          </p>
-        </div>
-      </div>
+      </BScroll>
     </div>
   </div>
 </template>
 
 <script>
 import Topbar from '../components/Topbar.vue'
+import BScroll from '../components/BetterScroll.vue'
 
 export default {
-  components: { Topbar },
+  components: { Topbar, BScroll },
   data() {
     return { active: 0, orderList: [] }
   },
@@ -89,6 +95,15 @@ export default {
   background-color: #eee;
 }
 .ordersList {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 82px;
+  bottom: 0;
+  .content-scroll {
+    height: 100%;
+    overflow: hidden;
+  }
   .orderInfo {
     background-color: #fff;
     font-size: 12px;

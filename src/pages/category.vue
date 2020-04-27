@@ -6,9 +6,9 @@
       <Topbar>
         <span slot="title">商品分类</span>
       </Topbar>
-      <van-row>
+      <div class="content">
         <!-- 侧边导航 -->
-        <van-col span="6">
+        <div class="left">
           <van-sidebar v-model="activeKey" @change="switchSidebar">
             <van-sidebar-item
               v-for="(item, index) in categoryInfo"
@@ -16,9 +16,9 @@
               :title="item.mallCategoryName"
             />
           </van-sidebar>
-        </van-col>
-        <!-- 子导航 -->
-        <van-col offset="1" span="17">
+        </div>
+        <div class="right">
+          <!-- 子导航 -->
           <van-tabs v-model="active" @click="categorySubClick">
             <van-tab
               v-for="(item, index) in categorySubInfo"
@@ -27,17 +27,23 @@
             ></van-tab>
           </van-tabs>
           <!-- 商品信息 -->
-          <van-card
-            v-for="(item, index) in goodsList"
-            :key="index"
-            :origin-price="item.orl_price"
-            :price="item.present_price"
-            :title="item.name"
-            :thumb="item.image"
-            @click="goGoodDetail(item.id)"
-          />
-        </van-col>
-      </van-row>
+          <div class="wrapper-container" v-if="goodsList.length">
+            <BScroll class="content-scroll">
+              <div class="wrapper-content">
+                <van-card
+                  v-for="(item, index) in goodsList"
+                  :key="index"
+                  :origin-price="item.orl_price"
+                  :price="item.present_price"
+                  :title="item.name"
+                  :thumb="item.image"
+                  @click="goGoodDetail(item.id)"
+                />
+              </div>
+            </BScroll>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Tabbar -->
@@ -48,13 +54,15 @@
 <script>
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
+import BScroll from '../components/BetterScroll.vue'
 import { mapMutations } from 'vuex'
 import store from '../store'
 
 export default {
   components: {
     Tabbar,
-    Topbar
+    Topbar,
+    BScroll
   },
   data() {
     return {
@@ -129,13 +137,32 @@ export default {
 
 <style lang='less' scoped>
 .container {
-  &:after {
-    content: '';
-    display: block;
-    height: 50px;
-  }
+  overflow: hidden;
 }
-van-row {
-  width: 100%;
+.content {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 36.5px;
+  bottom: 50px;
+  display: flex;
+  .right {
+    flex: 1;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    .wrapper-container {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      .content-scroll {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+    }
+  }
 }
 </style>
