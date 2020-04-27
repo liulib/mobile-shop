@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">确认订单</span>
     </Topbar>
     <!-- 选择地址 -->
@@ -49,7 +49,7 @@
       </BScroll>
     </div>
     <div class="confirm">
-      <van-submit-bar :price="totalPrice" button-text="提交订单" @submit="submitOrder" />
+      <van-submit-bar :price="totalPrice" button-text="提交订单" @submit="_submitOrder" />
     </div>
   </div>
 </template>
@@ -57,11 +57,11 @@
 <script>
 import Topbar from '../components/Topbar.vue'
 import BScroll from '../components/BetterScroll.vue'
-import store from '../store'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: { Topbar, BScroll },
+  mixins: [GoodsMixin],
   data() {
     return { confirmOrders: [], addressList: [], defAddress: {} }
   },
@@ -80,7 +80,7 @@ export default {
   watch: {},
   methods: {
     // 提交订单
-    async submitOrder() {
+    async _submitOrder() {
       if (!this.defAddress._id) {
         this.$toast('请添加收货地址')
         return
@@ -114,13 +114,11 @@ export default {
       } catch (error) {
         this.$toast(error.msg)
       }
-    },
-    ...mapMutations({
-      SET_CONFIRM_ORDER_INFO: 'SET_CONFIRM_ORDER_INFO'
-    })
+    }
   },
   created() {
-    this.confirmOrders = store.getters.confirmOrderInfo
+    console.log(this.confirmOrderInfo)
+    this.confirmOrders = this.confirmOrderInfo
   },
   // 使用守卫导航判断是否进入到提交订单界面
   beforeRouteEnter(to, from, next) {

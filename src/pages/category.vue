@@ -6,8 +6,9 @@
       <Topbar>
         <span slot="title">商品分类</span>
       </Topbar>
+      <!-- 分类主体内容 -->
       <div class="content">
-        <!-- 侧边导航 -->
+        <!-- 左侧侧边导航 -->
         <div class="left">
           <van-sidebar v-model="activeKey" @change="switchSidebar">
             <van-sidebar-item
@@ -17,6 +18,7 @@
             />
           </van-sidebar>
         </div>
+        <!-- 右侧内容 -->
         <div class="right">
           <!-- 子导航 -->
           <van-tabs v-model="active" @click="categorySubClick">
@@ -42,10 +44,10 @@
               </div>
             </BScroll>
           </div>
+          <loading :loadingStatus="loadingStatus" />
         </div>
       </div>
     </div>
-
     <!-- Tabbar -->
     <Tabbar></Tabbar>
   </div>
@@ -55,8 +57,7 @@
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
 import BScroll from '../components/BetterScroll.vue'
-import { mapMutations } from 'vuex'
-import store from '../store'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: {
@@ -64,16 +65,13 @@ export default {
     Topbar,
     BScroll
   },
+  mixins: [GoodsMixin],
   data() {
     return {
       activeKey: 0,
       active: 0,
       goodsList: [],
-      categoryInfo: [],
-      categorySubInfo: [],
-      loading: false,
-      finished: false,
-      refreshing: false
+      categorySubInfo: []
     }
   },
   computed: {},
@@ -85,8 +83,10 @@ export default {
         const res = await this.$api.goods.getGoodsList(categorySubId)
         if (res.code === 200) {
           this.goodsList = res.result
+          this.loadingStatus = false
         }
       } catch (error) {
+        this.loadingStatus = false
         this.$toast(error.data.msg)
       }
     },
@@ -103,19 +103,15 @@ export default {
     // 切换子导航
     categorySubClick() {
       this.getGoodsList(this.categorySubInfo[this.active].mallSubId)
-    },
-    ...mapMutations({
-      SET_CATEGORY_INFO: 'SET_CATEGORY_INFO'
-    })
+    }
   },
   async created() {
-    // 从vuex中获取分类数据，如果没有则重新获取并加入vuex中
-    this.categoryInfo = JSON.parse(store.getters.categoryInfo)
-    if (!this.categoryInfo) {
+    // 如果没有分类数据则重新获取并加入vuex中
+    if (!this.categoryInfo.length) {
       const res = await this.$api.goods.getHomeData()
       if (res.code === 200) {
         this.categoryInfo = res.result.category
-        this.SET_CATEGORY_INFO(JSON.stringify(res.result.category))
+        this.SET_CATEGORY_INFO(res.result.category)
       } else {
         this.$toast('服务器出错')
       }
@@ -126,11 +122,10 @@ export default {
     if (mallCategoryId) {
       this.activeKey = mallCategoryId - 1
       this.categorySubInfo = this.categoryInfo[this.activeKey].bxMallSubDto
-      this.getGoodsList(this.categorySubInfo[0].mallSubId)
     } else {
       this.categorySubInfo = this.categoryInfo[0].bxMallSubDto
-      this.getGoodsList(this.categorySubInfo[0].mallSubId)
     }
+    this.getGoodsList(this.categorySubInfo[0].mallSubId)
   }
 }
 </script>

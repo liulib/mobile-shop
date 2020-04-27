@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">地址管理</span>
     </Topbar>
     <!-- 地址列表 -->
@@ -14,18 +14,26 @@
         @select="selectAddress"
         @add="$router.push({ name: 'AddressEdit' })"
       />
+      <loading :loadingStatus="loadingStatus" />
     </div>
     <!-- 没有地址 -->
-    <div class="emptyAddress" v-else>暂无收货地址噢</div>
+    <div class="emptyAddress" v-if="!loadingStatus && !addressList.length">暂无收货地址噢~~</div>
+    <!-- 没有地址时候的底部新增按钮 -->
+    <div
+      class="add-address"
+      v-if="!loadingStatus && !addressList.length"
+      @click="$router.push({ name: 'AddressEdit' })"
+    >新增地址</div>
   </div>
 </template>
 
 <script>
 import Topbar from '../components/Topbar.vue'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: { Topbar },
+  mixins: [GoodsMixin],
   data() {
     return {
       chosenAddressId: '',
@@ -43,8 +51,11 @@ export default {
           let defAddress
           // 因为vant的van-address-list组件需要数组有id这个属性
           // 而我们的api返回的数据是没有的，所以做一下处理
+          // 反转下数组，将最新的放到前面
           this.addressList = res.addressList.reverse()
+          // 循环数组，为其添加id属性
           for (let i = 0; i < this.addressList.length; i++) {
+            // 如果是默认地址，则给他id为0
             if (this.addressList[i].isDefault) {
               defAddress = this.addressList[i]
               defAddress.id = '0'
@@ -57,6 +68,7 @@ export default {
           this.loadingStatus = false
         }
       } catch (error) {
+        this.loadingStatus = false
         this.$toast(error.msg)
       }
     },
@@ -84,10 +96,7 @@ export default {
       setTimeout(() => {
         this.$router.back()
       }, 1000)
-    },
-    ...mapMutations({
-      SET_ADDRESS_INFO: 'SET_ADDRESS_INFO'
-    })
+    }
   },
   created() {
     this._getAddressList()
@@ -98,5 +107,16 @@ export default {
 .emptyAddress {
   margin: 20px 0;
   text-align: center;
+}
+.add-address {
+  background-color: #ee0a24;
+  color: #fff;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>

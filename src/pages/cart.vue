@@ -1,11 +1,11 @@
 <template>
   <div>
-    <!-- 主体内容 -->
     <div class="container">
       <!-- 顶部导航 -->
       <Topbar>
         <span slot="title">购物车</span>
       </Topbar>
+      <!-- 购物车主体内容 -->
       <div class="shop-cart">
         <!-- 空购物车 -->
         <div class="empty-cart" v-if="!loadingStatus && !shopCartList.length">
@@ -65,37 +65,33 @@
             <van-checkbox v-model="checked" @click="checkAll">全选</van-checkbox>
           </van-submit-bar>
         </div>
+        <loading :loadingStatus="loadingStatus" />
       </div>
     </div>
     <!-- Tabbar -->
     <Tabbar></Tabbar>
-    <Loading :loadingStatus="loadingStatus"></Loading>
   </div>
 </template>
 
 <script>
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
-import Loading from '../components/Loading.vue'
 import BScroll from '../components/BetterScroll.vue'
-import store from '../store'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: {
     Tabbar,
     Topbar,
-    Loading,
     BScroll
   },
+  mixins: [GoodsMixin],
   data() {
     return {
       result: [],
       checked: false,
       shopCartList: [],
       value: 1,
-      loadingStatus: false,
-      userToken: '',
       isShowManage: false // 控制是否显示管理页面
     }
   },
@@ -142,9 +138,6 @@ export default {
         this.$toast('未选中商品')
       }
     },
-    onClickEditAddress: function() {
-      console.log('object')
-    },
     // 获取已经选中的商品
     getCheckGood() {
       return this.shopCartList.filter(val => val.checked === true)
@@ -162,10 +155,10 @@ export default {
         const res = await this.$api.users.getCartInfo()
         if (res.code === 200) {
           this.shopCartList = res.shopCartList
-        } else if (res.code === 401) {
-          this.$toast(res.msg)
+          this.loadingStatus = false
         }
       } catch (error) {
+        this.loadingStatus = false
         this.$toast(error.msg)
       }
     },
@@ -185,13 +178,9 @@ export default {
     // 管理页面切换
     showManage() {
       this.isShowManage = !this.isShowManage
-    },
-    ...mapMutations({
-      SET_CONFIRM_ORDER_INFO: 'SET_CONFIRM_ORDER_INFO'
-    })
+    }
   },
   created() {
-    this.userToken = store.getters.userToken
     if (this.userToken) {
       this._getCartInfo()
     }

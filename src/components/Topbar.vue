@@ -1,22 +1,36 @@
 <template>
   <div>
     <van-nav-bar>
-      <slot slot="left" name="left"></slot>
+      <template #left v-if="hasBack">
+        <van-icon name="arrow-left" size="18" @click="goBack" />
+      </template>
       <slot slot="title" name="title"></slot>
-      <slot slot="right" name="right"></slot>
     </van-nav-bar>
   </div>
 </template>
 
 <script>
+import { GoodsMixin } from '@/mixins/goodsMixin'
+
 export default {
   components: {},
+  mixins: [GoodsMixin],
+  props: {
+    hasBack: { type: Boolean, default: false }
+  },
   data() {
     return {}
   },
   computed: {},
   watch: {},
-  methods: {}
+  methods: {
+    goBack() {
+      this.back()
+    }
+  },
+  created() {
+    console.log(this.hasBack)
+  }
 }
 </script>
 <style lang='less' scoped>

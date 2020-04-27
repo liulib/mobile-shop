@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">订单管理</span>
     </Topbar>
     <!-- 订单分类导航 -->

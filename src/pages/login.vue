@@ -6,7 +6,7 @@
     <!-- 登录表单 -->
     <div class="login" v-if="flag===1">
       <h1>登录</h1>
-      <van-form @submit="login">
+      <van-form @submit="_login">
         <van-field
           v-model="phone"
           type="tel"
@@ -31,7 +31,7 @@
           :rules="[{ required: true, message: '请填写图片验证码' }]"
         >
           <div slot="button">
-            <img src ref="picCode" @click="getPicCode" />
+            <img src ref="picCode" @click="_getPicCode" />
           </div>
         </van-field>
         <div style="margin: 16px;">
@@ -43,7 +43,7 @@
     <!-- 注册表单 -->
     <div class="register" v-if="flag===2">
       <h1>注册</h1>
-      <van-form @submit="register">
+      <van-form @submit="_register">
         <van-field
           v-model="username"
           name="用户名"
@@ -80,7 +80,7 @@
               native-type="button"
               size="small"
               type="primary"
-              @click="getSmsCode"
+              @click="_getSmsCode"
             >发送验证码</van-button>
             <van-button
               v-else
@@ -88,7 +88,7 @@
               size="small"
               type="primary"
               :disabled="Boolean(messageText)"
-              @click="getSmsCode"
+              @click="_getSmsCode"
             >{{messageText+'秒后再试'}}</van-button>
           </template>
         </van-field>
@@ -103,10 +103,11 @@
 
 <script>
 import { isPhoneNumber } from '../utils/utils'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: {},
+  mixins: [GoodsMixin],
   data() {
     return {
       flag: 1,
@@ -115,15 +116,15 @@ export default {
       password: '',
       picCode: '',
       smsCode: '',
-      loading: false,
       messageText: '',
-      countTime: 60
+      countTime: 60,
+      loading: false // 按钮加载状态
     }
   },
   computed: {},
   watch: {},
   created() {
-    this.$nextTick(this.getPicCode)
+    this.$nextTick(this._getPicCode)
   },
   methods: {
     // 检测手机号格式
@@ -131,11 +132,11 @@ export default {
       return isPhoneNumber(val)
     },
     // 获取图片验证码
-    getPicCode() {
+    _getPicCode() {
       this.$refs.picCode.src = this.$api.users.sendPicCode()
     },
     // 获取短信验证码
-    async getSmsCode() {
+    async _getSmsCode() {
       try {
         const res = await this.$api.users.sendSMSCode(this.phone)
         if (res.code === 200 || res.code === 4010) {
@@ -159,11 +160,11 @@ export default {
     switchForm(val) {
       this.flag = val
       if (this.flag === 1) {
-        this.$nextTick(this.getPicCode)
+        this.$nextTick(this._getPicCode)
       }
     },
     // 登录
-    async login() {
+    async _login() {
       this.loading = true // 加载状态
       const { phone, password, picCode } = this.$data
       try {
@@ -184,7 +185,7 @@ export default {
       }
     },
     // 注册
-    async register() {
+    async _register() {
       this.loading = true // 加载状态
       const { username, phone, password, smsCode } = this.$data
       try {
@@ -210,10 +211,7 @@ export default {
     },
     goBack() {
       this.$router.push('/')
-    },
-    ...mapMutations({
-      SET_USER_TOKEN: 'SET_USER_TOKEN'
-    })
+    }
   }
 }
 </script>

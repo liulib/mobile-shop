@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">商品详情</span>
     </Topbar>
     <!-- 商品图片轮播 -->
@@ -64,21 +64,19 @@
 
 <script>
 import Topbar from '../components/Topbar.vue'
-import store from '../store'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   props: ['goodsId'],
   components: { Topbar },
+  mixins: [GoodsMixin],
   data() {
     return {
       current: 0,
       active: 0,
       goodsInfo: {},
       commentList: [], // 没有接口 暂时先不写了
-      userToken: '',
       collectionFlag: false,
-      browseHistory: [],
       browseFlag: false
     }
   },
@@ -157,16 +155,11 @@ export default {
     // 自定义指示器
     onChange(index) {
       this.current = index
-    },
-    ...mapMutations({
-      SET_BROWSE_HISTORY: 'SET_BROWSE_HISTORY'
-    })
+    }
   },
   created() {
     this._getGoodsDetail()
     this._queryCollection()
-    this.userToken = store.getters.userToken
-    this.browseHistory = store.getters.browseHistory
   }
 }
 </script>

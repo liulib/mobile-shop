@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">我的收藏</span>
     </Topbar>
     <!-- 收藏商品列表 -->

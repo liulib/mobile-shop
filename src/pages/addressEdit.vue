@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">编辑地址</span>
     </Topbar>
     <!-- 编辑地址，使用van-address-edit组件 -->
@@ -20,21 +20,19 @@
 
 <script>
 import Topbar from '../components/Topbar.vue'
-import store from '../store'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   data() {
     return {
       areaList: require('@/assets/area').default,
       searchResult: [],
-      addressInfo: {},
       isSaving: false,
-      isDeleting: false,
-      userToken: ''
+      isDeleting: false
     }
   },
   components: { Topbar },
+  mixins: [GoodsMixin],
   methods: {
     // 保存修改后的地址
     async _saveAddress(content) {
@@ -101,15 +99,9 @@ export default {
           this.$router.push({ name: 'Login' })
         }
       }
-    },
-    ...mapMutations({
-      DEL_ADDRESS_INFO: 'DEL_ADDRESS_INFO'
-    })
+    }
   },
-  created() {
-    this.addressInfo = store.getters.addressInfo
-    this.userToken = store.getters.userToken
-  }
+  created() {}
 }
 </script>
 <style lang='less' scoped>

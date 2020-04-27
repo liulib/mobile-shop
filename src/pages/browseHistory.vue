@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 顶部导航 -->
-    <Topbar>
+    <Topbar hasBack>
       <span slot="title">浏览历史</span>
     </Topbar>
     <!-- 浏览历史商品 -->
@@ -9,7 +9,7 @@
       <BScroll class="content-scroll">
         <div class="wrapper-content">
           <van-card
-            v-for="(item,index) in browseHistoryList"
+            v-for="(item,index) in reverseData"
             :key="index"
             :price="item.present_price"
             :title="item.name"
@@ -29,31 +29,30 @@
 <script>
 import Topbar from '../components/Topbar.vue'
 import BScroll from '../components/BetterScroll.vue'
-import store from '../store'
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: { Topbar, BScroll },
+  mixins: [GoodsMixin],
   data() {
-    return { browseHistoryList: [] }
+    return {}
   },
-  computed: {},
+  computed: {
+    reverseData() {
+      const tmp = this.browseHistory.slice()
+      return tmp.reverse()
+    }
+  },
   watch: {},
   methods: {
     //  删除浏览历史
     delBrowseHistory(index) {
-      const tmp = this.browseHistoryList.slice()
+      const tmp = this.browseHistory.slice()
       tmp.splice(index, 1)
       this.SET_BROWSE_HISTORY(tmp)
-      this.browseHistoryList = store.getters.browseHistory
-    },
-    ...mapMutations({
-      SET_BROWSE_HISTORY: 'SET_BROWSE_HISTORY'
-    })
+    }
   },
-  created() {
-    this.browseHistoryList = store.getters.browseHistory
-  }
+  created() {}
 }
 </script>
 <style lang='less' scoped>

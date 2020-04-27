@@ -127,8 +127,9 @@
         </div>
       </BScroll>
     </div>
-    <!-- 搜索历史 -->
+    <!-- 搜索界面 -->
     <div class="searchResult" v-if="isShowSearch">
+      <!-- 搜索历史 -->
       <div class="searchWarp" v-if="!searchResultList.length">
         <div class="searchTitle">
           <span>搜索历史</span>
@@ -158,6 +159,7 @@
         </div>
       </BScroll>
     </div>
+    <loading :loadingStatus="loadingStatus" />
     <!-- Tabbar -->
     <Tabbar></Tabbar>
   </div>
@@ -166,8 +168,7 @@
 <script>
 import Tabbar from '../components/Tabbar'
 import BScroll from '../components/BetterScroll'
-import { mapMutations } from 'vuex'
-import store from '../store'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 import { throttle } from '../utils/utils'
 
 export default {
@@ -175,16 +176,15 @@ export default {
     Tabbar,
     BScroll
   },
+  mixins: [GoodsMixin],
   data() {
     return {
       value: '',
       homeData: {},
       isShowSearch: false,
-      userToken: '',
       searchResultList: [],
       searchLength: 0,
       isLoadMore: false,
-      searchHistory: [],
       page: 1 // 搜索的数据页码
     }
   },
@@ -198,10 +198,12 @@ export default {
         if (res.code === 200) {
           this.homeData = res.result
           // 将大分类信息存入vuex
-          this.SET_CATEGORY_INFO(JSON.stringify(this.homeData.category))
+          this.SET_CATEGORY_INFO(this.homeData.category)
+          this.loadingStatus = false
         }
       } catch (error) {
         this.$toast(error.data.msg)
+        this.loadingStatus = false
       }
     },
     // 添加到购物车
@@ -240,7 +242,6 @@ export default {
       setTimeout(() => {
         this.value = ''
         this.searchResultList = []
-        this.searchHistory = store.getters.searchHistory
       }, 300)
     },
     // 获取搜索结果
@@ -278,7 +279,6 @@ export default {
             }, 500)
           }
         }
-        this.searchHistory = store.getters.searchHistory
       } catch (error) {
         console.log(error)
       }
@@ -286,7 +286,6 @@ export default {
     // 删除搜索历史
     delSearchHistory() {
       this.DEL_SEARCH_HISTORY()
-      this.searchHistory = store.getters.searchHistory
     },
     // 上拉加载更多
     searchScrollEnd() {
@@ -300,12 +299,7 @@ export default {
           this.$toast('没有更多数据了~~')
         }
       }
-    },
-    ...mapMutations({
-      SET_CATEGORY_INFO: 'SET_CATEGORY_INFO',
-      SET_SEARCH_HISTORY: 'SET_SEARCH_HISTORY',
-      DEL_SEARCH_HISTORY: 'DEL_SEARCH_HISTORY'
-    })
+    }
   },
   created() {
     this._getHome()
@@ -319,8 +313,6 @@ export default {
         }
       }, 2000)
     )
-    this.userToken = store.getters.userToken
-    this.searchHistory = store.getters.searchHistory
   },
   destroyed() {
     // 注销 watch

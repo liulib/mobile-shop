@@ -89,7 +89,6 @@
         </van-cell-group>
       </div>
     </div>
-
     <!-- Tabbar -->
     <Tabbar></Tabbar>
   </div>
@@ -98,14 +97,14 @@
 <script>
 import Tabbar from '../components/Tabbar.vue'
 import Topbar from '../components/Topbar.vue'
-
-import { mapMutations } from 'vuex'
+import { GoodsMixin } from '@/mixins/goodsMixin'
 
 export default {
   components: {
     Tabbar,
     Topbar
   },
+  mixins: [GoodsMixin],
   inject: ['reload'],
   data() {
     return {
@@ -159,11 +158,11 @@ export default {
         .catch(() => {
           // on cancel
         })
-    }, // 去订单管理界面
+    },
+    // 去订单管理界面
     goOrderManage(status) {
       this.$router.push({ name: 'OrderManage', query: { status } })
-    },
-    ...mapMutations(['DEL_USER_TOKEN'])
+    }
   },
   created() {
     this._getUserInfo()

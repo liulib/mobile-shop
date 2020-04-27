@@ -14,7 +14,7 @@ const mutations = {
   // 设置categoryInfo
   [types.SET_CATEGORY_INFO](state, payload) {
     state.categoryInfo = payload
-    localStorage.setItem('categoryInfo', payload)
+    localStorage.setItem('categoryInfo', JSON.stringify(payload))
   },
   // 设置confirmOrderInfo
   [types.SET_CONFIRM_ORDER_INFO](state, payload) {
