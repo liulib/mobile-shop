@@ -8,7 +8,24 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>
+      <%= htmlWebpackPlugin.options.isProd ? '' : 'dev - ' %>移动端商城
+    </title>
+    <% if(htmlWebpackPlugin.options.isProd){ %>
+    <!-- 外部cdn资源 -->
+    <!-- 引入样式文件 -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css"
+    /> -->
+    <!-- 引入 Vue 和 Vant 的 JS 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vant@2.8/lib/vant.min.js"></script> -->
+    <script src="https://cdn.staticfile.org/vuex/3.0.0/vuex.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue-router/3.2.0/vue-router.min.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.19.2/axios.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/better-scroll@1.15.2/dist/bscroll.min.js"></script> -->
+    <% } %>
   </head>
   <body>
     <div id="app"></div>

@@ -183,6 +183,8 @@ export default {
   created() {
     if (this.userToken) {
       this._getCartInfo()
+    } else {
+      this.loadingStatus = false
     }
   }
 }

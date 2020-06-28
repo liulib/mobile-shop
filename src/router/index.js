@@ -1,17 +1,36 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Index from '../pages/index.vue'
-import Category from '../pages/category.vue'
-import Cart from '../pages/cart.vue'
-import User from '../pages/user.vue'
-import Login from '../pages/login.vue'
-import goodsDetail from '../pages/goodsDetail.vue'
-import confirmOrder from '../pages/confirmOrder.vue'
-import AddressManage from '../pages/addressManage.vue'
-import AddressEdit from '../pages/addressEdit.vue'
-import OrderManage from '../pages/orderManage.vue'
-import Collection from '../pages/collection.vue'
-import BrowseHistory from '../pages/browseHistory.vue'
+
+const Index = () => import(/* webpackChunkName: "Index" */ '../pages/index.vue')
+const Category = () =>
+  import(/* webpackChunkName: "Category" */ '../pages/category.vue')
+const Cart = () => import(/* webpackChunkName: "Cart" */ '../pages/cart.vue')
+const User = () => import(/* webpackChunkName: "User" */ '../pages/user.vue')
+const Login = () => import(/* webpackChunkName: "Login" */ '../pages/login.vue')
+const goodsDetail = () =>
+  import(/* webpackChunkName: "goodsDetail" */ '../pages/goodsDetail.vue')
+const confirmOrder = () =>
+  import(/* webpackChunkName: "confirmOrder" */ '../pages/confirmOrder.vue')
+const AddressManage = () =>
+  import(
+    /* webpackChunkName: "AddressManage-AddressEdit" */ '../pages/addressManage.vue'
+  )
+const AddressEdit = () =>
+  import(
+    /* webpackChunkName: "AddressManage-AddressEdit" */ '../pages/addressEdit.vue'
+  )
+const OrderManage = () =>
+  import(
+    /* webpackChunkName: "OrderManage-Collection-BrowseHistory" */ '../pages/orderManage.vue'
+  )
+const Collection = () =>
+  import(
+    /* webpackChunkName: "OrderManage-Collection-BrowseHistory" */ '../pages/collection.vue'
+  )
+const BrowseHistory = () =>
+  import(
+    /* webpackChunkName: "OrderManage-Collection-BrowseHistory" */ '../pages/browseHistory.vue'
+  )
 
 Vue.use(VueRouter)
 
