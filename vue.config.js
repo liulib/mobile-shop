@@ -1,3 +1,10 @@
+/*
+ * @Author       : liulib
+ * @Date         : 2020-03-30 21:05:32
+ * @LastEditors  : liulib
+ * @LastEditTime : 2020-07-30 17:09:25
+ */
+
 const config = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   devServer: {
@@ -24,8 +31,8 @@ const config = {
         'vue-router': 'VueRouter',
         vuex: 'Vuex',
         axios: 'axios'
-        // vant: 'vant'
         // 'better-scroll': 'better-scroll'
+        // vant: 'vant'
       })
       // 挂载参数isProd到index.html中 用它来定制首页内容
       config.plugin('html').tap(args => {
